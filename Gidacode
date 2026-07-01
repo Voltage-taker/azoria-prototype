@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azôria - Stage 0 Prototype</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #F4F1EA; font-family: system-ui, -apple-system, sans-serif; }
+        .bg-azoria-dark { background-color: #0A2F1D; }
+        .text-azoria-gold { color: #E6C994; }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden border-4 border-gray-900">
+        <!-- Header -->
+        <div class="bg-azoria-dark text-azoria-gold p-4 text-center">
+            <h1 class="text-xl font-black tracking-wide">Azôria Stage 0</h1>
+            <p class="text-xs opacity-80">The Ancestor's Tongue (Pidgin Engine)</p>
+        </div>
+
+        <div class="p-6">
+            <!-- Mission Brief -->
+            <div class="bg-orange-50 border border-orange-200 rounded-xl p-4 mb-6">
+                <h2 class="font-bold text-gray-800 flex items-center gap-2 mb-2">
+                    🔌 Mission: The Stripped Type-C
+                </h2>
+                <p class="text-sm text-gray-600">
+                    You have a stripped Type-C laptop charger tip. If the voltage is exactly 20, we are safe to connect. Otherwise, alert the user to stop. 
+                    <br><br>
+                    <strong>Task:</strong> Write the logic in Pidgin.
+                </p>
+            </div>
+
+            <!-- Editor -->
+            <textarea id="logicInput" rows="4" 
+                class="w-full p-4 rounded-xl border-2 border-gray-300 focus:border-green-800 focus:outline-none mb-4 resize-none shadow-inner"
+                placeholder="E.g. If voltage na 20, make e connect..."></textarea>
+
+            <button onclick="analyzeLogic()" 
+                class="w-full bg-azoria-dark text-white font-bold py-3 rounded-xl shadow-lg hover:opacity-90 active:scale-95 transition-all">
+                Test Logic
+            </button>
+
+            <!-- Output Console -->
+            <div id="outputConsole" class="mt-6 p-4 rounded-xl hidden text-sm font-bold"></div>
+            
+            <div id="pythonCode" class="mt-4 p-4 bg-gray-900 text-green-400 font-mono text-xs rounded-xl hidden">
+                # Python Translation:
+                <br>if voltage == 20:
+                <br>&nbsp;&nbsp;&nbsp;&nbsp;connect_charger()
+                <br>else:
+                <br>&nbsp;&nbsp;&nbsp;&nbsp;alert("Stop!")
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function analyzeLogic() {
+            const input = document.getElementById('logicInput').value.toLowerCase();
+            const output = document.getElementById('outputConsole');
+            const pythonCode = document.getElementById('pythonCode');
+            
+            // Basic NLP Keyword Check
+            const hasCondition = input.includes('if') || input.includes('suppose') || input.includes('make');
+            const hasTarget = input.includes('20') || input.includes('twenty');
+            const hasAction = input.includes('connect') || input.includes('charge') || input.includes('plug');
+            const hasElse = input.includes('else') || input.includes('otherwise') || input.includes('stop');
+
+            output.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+            pythonCode.classList.add('hidden');
+
+            if (hasCondition && hasTarget && hasAction && hasElse) {
+                output.classList.add('bg-green-100', 'text-green-700');
+                output.innerHTML = "✅ Correct! Your logic handles both the safe voltage and the danger state.";
+                pythonCode.classList.remove('hidden');
+            } else if (!hasCondition) {
+                output.classList.add('bg-red-100', 'text-red-700');
+                output.innerHTML = "❌ Ah, you forgot the condition. Use words like 'If' or 'Suppose'.";
+            } else if (!hasTarget) {
+                output.classList.add('bg-red-100', 'text-red-700');
+                output.innerHTML = "❌ What voltage are we checking for? The Type-C tip needs exactly 20.";
+            } else if (!hasElse) {
+                output.classList.add('bg-red-100', 'text-red-700');
+                output.innerHTML = "❌ You checked the correct voltage, but what happens if it's wrong? Add an 'else' or 'stop' command.";
+            } else {
+                output.classList.add('bg-red-100', 'text-red-700');
+                output.innerHTML = "❌ Keep trying! Explain what the system should do with the voltage.";
+            }
+        }
+    </script>
+</body>
+</html>
